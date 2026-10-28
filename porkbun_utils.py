@@ -2,7 +2,7 @@ import json
 import os
 
 def load_porkbun_credentials():
-    path = "../state-and-config/config/porkbun.json"
+    path = "../../porkbun.json"
     try:
         with open(path, 'r') as f:
             return json.load(f)
