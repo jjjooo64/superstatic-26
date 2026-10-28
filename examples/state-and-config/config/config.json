@@ -1,0 +1,10 @@
+{
+  "stack_name": "static-site-20261028",
+  "bucket_name": "your-unique-bucket-name",
+  "region": "us-east-1",
+  "domains": [
+    "example.com",
+    "www.example.com"
+  ],
+  "loader_url": "https://your-user.github.io/your-content-repo/example-loader.js"
+}
