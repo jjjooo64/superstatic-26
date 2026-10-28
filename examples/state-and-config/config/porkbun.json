@@ -2,3 +2,6 @@
   "api_key": "pk1_eeeeeexxxxxxaaaaaammmmmpppppllllleeee",
   "secret_key": "sk1_eeeeeexxxxxxaaaaaammmmmpppppllllleeee"
 }
+##remove everything including and below this line before use##
+insert your keys above and place this file in the grandparent folder to the repository folder
+(the grandparent of the folder containing deploy.sh and other installation scripts)
