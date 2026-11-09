@@ -6,18 +6,21 @@ All missing paths return that `index.html` with HTTP 200 (no redirect).
 
 ## Layout
 ```
-grandparent/
-  porkbun.json                 ← API credentials
-  parent/
-    state-and-config/
-      config/                  ← user files (config.json, rootdomains.json)
-      state/                   ← generated (index.html, cert-arns.json)
-    superstatic/               ← this repo
-      deploy.sh
-      examples/
-        state-and-config/      ← copy this folder up one level
-        example-loader.js
-      …
+parent/
+  state-and-config/
+    config/                  ← user files
+      config.json
+      porkbun.json
+      rootdomains.json       ← optional
+    state/                   ← generated
+      index.html
+      cert-arns.json
+  superstatic/               ← this repo
+    deploy.sh
+    examples/
+      state-and-config/      ← copy this folder up one level
+      example-loader.js
+    …
 ```
 
 If the repo folder is named `state-and-config`, `./deploy` refuses to run.
@@ -28,13 +31,13 @@ If the repo folder is named `state-and-config`, `./deploy` refuses to run.
    cp -r examples/state-and-config ../
    ```
 2. Edit `../state-and-config/config/config.json`.
-3. Place your Porkbun credentials at `../../porkbun.json`.
-4. From the repo root: `./deploy`
+3. Edit `../state-and-config/config/porkbun.json` with your API credentials.
+4. Optionally edit `../state-and-config/config/rootdomains.json` if you use multi-part public suffixes.
+5. From the repo root: `./deploy`
 
 ## Notes
 - `./deploy` is the single entry point.
 - Certificate must be an exact SAN match for the domains in config.
 - Generated files live under `state-and-config/state/`.
 - You can back up the whole `state-and-config` folder independently of the repo.
-- `porkbun.json` stays one level above everything else so it is harder to commit by accident.
 - `loader_urls` is an array; each entry becomes a `<script src="...">` in the generated `index.html` (in order).
