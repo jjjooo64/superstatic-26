@@ -1,7 +1,7 @@
 # superstatic
 
 S3 + CloudFront static site skeleton.  
-Bare `index.html` loads a `loader.js` from a URL you supply.  
+Bare `index.html` loads one or more scripts from URLs you supply.  
 All missing paths return that `index.html` with HTTP 200 (no redirect).
 
 ## Layout
@@ -37,3 +37,4 @@ If the repo folder is named `state-and-config`, `./deploy` refuses to run.
 - Generated files live under `state-and-config/state/`.
 - You can back up the whole `state-and-config` folder independently of the repo.
 - `porkbun.json` stays one level above everything else so it is harder to commit by accident.
+- `loader_urls` is an array; each entry becomes a `<script src="...">` in the generated `index.html` (in order).
