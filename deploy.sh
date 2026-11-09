@@ -31,19 +31,19 @@ fail() {
 }
 
 if [ ! -f "$CONFIG" ]; then
-  fail "$CONFIG not found (copy examples/config.json.example there)"
+  fail "$CONFIG not found (copy examples/state-and-config up one level and edit config/config.json)"
 fi
 
 STACK_NAME=$(jq -r '.stack_name' "$CONFIG")
 BUCKET_NAME=$(jq -r '.bucket_name' "$CONFIG")
 REGION=$(jq -r '.region // "us-east-1"' "$CONFIG")
-LOADER_URL=$(jq -r '.loader_url' "$CONFIG")
 DOMAIN_NAMES=$(jq -r '.domains | join(",")' "$CONFIG")
 mapfile -t REQUIRED < <(jq -r '.domains[]' "$CONFIG" | sort)
+mapfile -t LOADER_URLS < <(jq -r '.loader_urls[]?' "$CONFIG")
 
 [ -z "$STACK_NAME" ] || [ "$STACK_NAME" = "null" ] && fail "stack_name missing"
 [ -z "$BUCKET_NAME" ] || [ "$BUCKET_NAME" = "null" ] && fail "bucket_name missing"
-[ -z "$LOADER_URL" ] || [ "$LOADER_URL" = "null" ] && fail "loader_url missing"
+[ ${#LOADER_URLS[@]} -eq 0 ] && fail "loader_urls array missing or empty"
 [ ${#REQUIRED[@]} -eq 0 ] && fail "domains array empty"
 
 REQUIRED_SORTED=$(printf '%s\n' "${REQUIRED[@]}" | sort | tr '\n' ',' | sed 's/,$//')
@@ -177,23 +177,25 @@ aws cloudformation deploy \
 
 echo
 echo "=== 3. index.html ==="
-cat > "$INDEX_HTML" <<EOF
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Site</title>
-  <script src="${LOADER_URL}"></script>
-</head>
-<body>
-</body>
-</html>
-EOF
+{
+  echo '<!DOCTYPE html>'
+  echo '<html lang="en">'
+  echo '<head>'
+  echo '  <meta charset="utf-8">'
+  echo '  <meta name="viewport" content="width=device-width, initial-scale=1">'
+  echo '  <title>Site</title>'
+  for url in "${LOADER_URLS[@]}"; do
+    echo "  <script src=\"${url}\"></script>"
+  done
+  echo '</head>'
+  echo '<body>'
+  echo '</body>'
+  echo '</html>'
+} > "$INDEX_HTML"
 
 aws s3 cp "$INDEX_HTML" "s3://${BUCKET_NAME}/index.html" --region "$REGION" \
   || fail "Failed to upload index.html"
-echo "Uploaded index.html"
+echo "Uploaded index.html with ${#LOADER_URLS[@]} script tag(s)"
 
 rm -f "$CERT_ARNS"
 
