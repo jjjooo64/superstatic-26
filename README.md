@@ -40,4 +40,4 @@ If the repo folder is named `state-and-config`, `./deploy` refuses to run.
 - Certificate must be an exact SAN match for the domains in config.
 - Generated files live under `state-and-config/state/`.
 - You can back up the whole `state-and-config` folder independently of the repo.
-- `loader_urls` is an array; each entry becomes a `<script src="...">` in the generated `index.html` (in order).
+- `loader_urls` and `style_urls` are each an array; each entry in these arrays  becomes a `<script src="..." defer>` or `<link rel="stylesheet" href="...">` in the head of  generated `index.html` (in order).

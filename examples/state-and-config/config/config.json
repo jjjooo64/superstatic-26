@@ -9,5 +9,9 @@
   "loader_urls": [
     "https://your-user.github.io/your-content-repo/config.js",
     "https://your-user.github.io/your-content-repo/loader.js"
+  ],
+  "style_urls": [
+    "https://your-user.github.io/your-content-repo/styles.css"
   ]
 }
+

@@ -40,6 +40,7 @@ REGION=$(jq -r '.region // "us-east-1"' "$CONFIG")
 DOMAIN_NAMES=$(jq -r '.domains | join(",")' "$CONFIG")
 mapfile -t REQUIRED < <(jq -r '.domains[]' "$CONFIG" | sort)
 mapfile -t LOADER_URLS < <(jq -r '.loader_urls[]?' "$CONFIG")
+mapfile -t STYLE_URLS < <(jq -r '.style_urls[]?' "$CONFIG")
 
 [ -z "$STACK_NAME" ] || [ "$STACK_NAME" = "null" ] && fail "stack_name missing"
 [ -z "$BUCKET_NAME" ] || [ "$BUCKET_NAME" = "null" ] && fail "bucket_name missing"
@@ -184,8 +185,11 @@ echo "=== 3. index.html ==="
   echo '  <meta charset="utf-8">'
   echo '  <meta name="viewport" content="width=device-width, initial-scale=1">'
   echo '  <title>Site</title>'
+  for url in "${STYLE_URLS[@]}"; do
+    echo "  <link rel=\"stylesheet\" href=\"${url}\">"
+  done
   for url in "${LOADER_URLS[@]}"; do
-    echo "  <script src=\"${url}\"></script>"
+    echo "  <script src=\"${url}\" defer></script>"
   done
   echo '</head>'
   echo '<body>'
@@ -195,7 +199,7 @@ echo "=== 3. index.html ==="
 
 aws s3 cp "$INDEX_HTML" "s3://${BUCKET_NAME}/index.html" --region "$REGION" \
   || fail "Failed to upload index.html"
-echo "Uploaded index.html with ${#LOADER_URLS[@]} script tag(s)"
+echo "Uploaded index.html with ${#STYLE_URLS[@]} stylesheet(s) and ${#LOADER_URLS[@]} script(s)"
 
 rm -f "$CERT_ARNS"
 
@@ -212,3 +216,4 @@ CF_DOMAIN=$(aws cloudformation describe-stacks \
   --output text)
 echo "CloudFront: $CF_DOMAIN"
 echo "Site should be live (allow a minute for DNS/CloudFront)."
+
