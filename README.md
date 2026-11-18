@@ -1,6 +1,6 @@
 # superstatic
-
-S3 + CloudFront static site skeleton.  
+The purpose of this repo is to serve as a tool for automated setup of infrastructure and configurations necessary to fully realize hosting of a skeleton index.html (containing tags referencing custom stylesheet and script urls) to be served in response to any path requested at any one of multiple custom domains.
+The hosting is realized through static site hosting via S3 + CloudFront and DNS settings live on Porkbun (nameservers must be porkbun, but registar need not be porkbun)
 Bare `index.html` loads one or more scripts from URLs you supply.  
 All missing paths return that `index.html` with HTTP 200 (no redirect).
 
@@ -36,14 +36,15 @@ The following setup steps assume the following are true:
    ```bash
    cp -r examples/state-and-config ../
    ```
-2. Edit `../state-and-config/config/config.json`.
-3. Edit `../state-and-config/config/porkbun.json` with your API credentials.
+2. Edit `../state-and-config/config/config.json`. Make sure that all the domains in the domains array have their DNS settings editable in a Porkbun account you control, and that they each have API access enabled from the Porkbun dashboard. Make sure that you are able to host the stylesheets and/or scripts, such that they will be accessible at the urls you input. 
+3.  Edit `../state-and-config/config/porkbun.json` with your API credentials.
 4. Optionally edit `../state-and-config/config/rootdomains.json` if you use multi-part public suffixes.
 5. From the repo root: `./deploy`
+6. Follow instructions output, rerunning step 5 if prompted to do so.
+7.  `./deploy` will attempt to make changes within your AWS and Porkbun accounts, automatically setting configurations and setting up infrastructure in order to fully realize hosting of a skeleton index.html (containing your tags referencing your stylesheets and scripts) to be served in response to any path requested at any of the domains listed in `../state-and-config/config/config.json`. Once the deployment completes successfully, you can control what requests to the domain(s) actually look like on the client side, by editing the stylesheets and/or javascript files referenced in `../state-and-config/config/config.json`. One approach is to have one or more of the javascript files be a loader that loads other javascript files, as exemplified in `examples/example-loader.js
 
 ## Notes
-- `./deploy` is the single entry point.
-- Certificate must be an exact SAN match for the domains in config.
+
 - Generated files live under `state-and-config/state/`, but this is just a cache for temporary files. The logical outcome of running the program is not affected if this folder or its contents are removed.
 - You can back up the whole `state-and-config` folder independently of the repo and then remove both it and the repo from your cloudshell. If you want to take down the website or redeploy it later, you can download the repo and copy over your backed up state-and-config instead of getting it from the examples folder referenced in the setup above. The program will locate and run on previously deployed stack which will be referenced by the contents of the state-and-config/config folder.
 - `loader_urls` and `style_urls` are each an array; each entry in these arrays  becomes a `<script src="..." defer>` or `<link rel="stylesheet" href="...">` in the head of  generated `index.html` (in order).
