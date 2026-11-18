@@ -1,8 +1,10 @@
 # superstatic
-The purpose of this repo is to serve as a tool for automated setup of infrastructure and configurations necessary to fully realize hosting of a skeleton index.html (containing tags referencing custom stylesheet and script urls) to be served in response to any path requested at any one of multiple custom domains.
+The purpose of this repo is to serve as a tool for automated setup of infrastructure and configurations necessary to fully realize hosting of a skeleton index.html (containing tags referencing custom stylesheet and script urls) to be served in response to any path requested at any one of multiple custom domains (no 404, all paths are responded to by AWS with index.html and 200).
+
 The hosting is realized through static site hosting via S3 + CloudFront and DNS settings live on Porkbun (nameservers must be porkbun, but registar need not be porkbun)
-Bare `index.html` loads one or more scripts from URLs you supply.  
-All missing paths return that `index.html` with HTTP 200 (no redirect).
+
+Bare `index.html` loads one or more scripts from URLs you supply. Making site behavior infinitely customizable after AWS deployment, by editing client-side javascript after setup, without needing to redeploy or change anything on AWS. This is not about "best practice". This is about getting something running and running cheaply and easily, and developing it while it is already live, using a language you are familiar with in development and execution environments where you feel at home. 
+
 
 ## Layout
 ```
