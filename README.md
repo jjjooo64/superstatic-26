@@ -47,6 +47,6 @@ The following setup steps assume the following are true:
 
 ## Notes
 
-- Generated files live under `state-and-config/state/`, but this is just a cache for temporary files. The logical outcome of running the program is not affected if this folder or its contents are removed.
-- You can back up the whole `state-and-config` folder independently of the repo and then remove both it and the repo from your cloudshell. If you want to take down the website or redeploy it later, you can download the repo and copy over your backed up state-and-config instead of getting it from the examples folder referenced in the setup above. The program will locate and run on previously deployed stack which will be referenced by the contents of the state-and-config/config folder.
+- Generated files live under `state-and-config/state/`, but this is just a cache for temporary files. The logical outcome of running the deploy is not affected if this folder or its contents are removed.
+- You can back up the whole `state-and-config` folder independently of the repo and then remove both it and the repo from your cloudshell. If you want to take down the website or redeploy it later, you can download the repo and copy over your backed up state-and-config instead of getting it from the examples folder referenced in the setup above. The scripts in this repo will locate and run on the previously deployed stack which will be referenced by the contents of the state-and-config/config folder.
 - `loader_urls` and `style_urls` are each an array; each entry in these arrays  becomes a `<script src="..." defer>` or `<link rel="stylesheet" href="...">` in the head of  generated `index.html` (in order).
